@@ -28,9 +28,9 @@ def parseFile(path):
     ctr_1 = ""
     for i in range(int(obj)):
         for j in range(int(obj)):
-            ctr_1 += "x_{0} y_{0}_{1} + ".format(int(i), int(j))
+            ctr_1 += "y_{0}_{1} + ".format(int(i), int(j))
     ctr_1 = ctr_1[:len(ctr_1)-3] + " = " + str(obj)
-    constraintList.append(ctr_1)
+    #constraintList.append(ctr_1)
     s = []
     for param in parmatersTable:
         for i in range(param[1]):
@@ -40,7 +40,14 @@ def parseFile(path):
         ctr_2 = ""
         for j in range(int(obj)):
             ctr_2 += "{2}y_{0}_{1} + ".format(str(i), str(j), s[j])
-        ctr_2 = ctr_2[:len(ctr_2)-3] + " <= " + c
+        ctr_2 = ctr_2[:len(ctr_2)-3] + " - " + c + " x_{0}".format(i) + " <= 0" 
+        constraintList.append(ctr_2)
+
+    for j in range(int(obj)):
+        ctr_2 = ""
+        for i in range(int(obj)):
+            ctr_2 += "y_{0}_{1} + ".format(str(i), str(j))
+        ctr_2 = ctr_2[:len(ctr_2)-3] +  " = 1" 
         constraintList.append(ctr_2)
         
     index = 0
