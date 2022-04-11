@@ -12,20 +12,24 @@ def parseFile(path):
     parmatersTable = []
     for i in range(int(types)):
         parmatersTable.append([int(element)for element in f.readline().rstrip().split(" ")])
-    
+    M  = max(tuple(zip(*parmatersTable))[1])
+    print(M)
     conflictsTable = []
     for i in range(int(conflicts)):
         conflictsTable.append([int(element)for element in f.readline().rstrip().split(" ")])
     
     res = open(path + ".lp", "w")
+    
+    #obj function
     res.write("Minimize \n")
     obj_function = "z_0"
     for c in range(1,int(obj)):
         obj_function += (" + z_"+str(c))
     res.write("     " + obj_function + "\n")
+    
+    #contraintes
     res.write("Subject To \n")
     constraintList = []
-
     
     for c in range(int(obj)):
         ctr_1 = ""
@@ -41,11 +45,31 @@ def parseFile(path):
         ctr_2 = ctr_2[:len(ctr_2)-3] +  " = " + str(parmatersTable[t][1]) 
         constraintList.append(ctr_2)
         
+    for t in range(int(types)):
+        for c in range(int(obj)):
+            ctr_3 = "y_{0}_{1} - x_{0}_{1} <= 0".format(str(c), str(t))
+            constraintList.append(ctr_3)
+        
+    for t in range(int(types)):
+        for c in range(int(obj)):
+            ctr_4 = "x_{0}_{1} - {2}y_{0}_{1} <= 0".format(str(c), str(t), str(M))
+            constraintList.append(ctr_4)
+          
+    if(int(args[2]) > 0):
+        #special contrainte 1
+        for t in range(int(types)):
+            ctr_5 = ""
+            for c in range(int(obj)):
+                ctr_5 += "y_{0}_{1} + ".format(str(c), str(t))
+            ctr_5 = ctr_5[:len(ctr_5)-3] +  " <= " + str(parmatersTable[t][2]) 
+            constraintList.append(ctr_5)
+                  
     index = 0
     for ctr in constraintList:
         res.write("    ctr_{0}: ".format(index) + ctr + "\n")
         index += 1
     
+    #variables
     res.write("Binary \n")
     for c in range(int(obj)):
         res.write("     z_{0}".format(c) + "\n")
@@ -60,20 +84,6 @@ def parseFile(path):
     
     
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
