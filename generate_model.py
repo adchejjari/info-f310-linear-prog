@@ -63,6 +63,18 @@ def parseFile(path):
                 ctr_5 += "y_{0}_{1} + ".format(str(c), str(t))
             ctr_5 = ctr_5[:len(ctr_5)-3] +  " <= " + str(parmatersTable[t][2]) 
             constraintList.append(ctr_5)
+
+    if (int(args[2]) == 2):
+        #special constraint n 2
+        for conflict in conflictsTable:
+            ctr_6 = ""
+            for c in range(int(obj)):
+                for type in conflict:
+                    ctr_6 += "y_{0}_{1} + " .format(str(type), c)
+            ctr_6 = ctr_6[:len(ctr_6)-3] + " <= 1"
+            constraintList.append(ctr_6)
+
+    
                   
     index = 0
     for ctr in constraintList:
