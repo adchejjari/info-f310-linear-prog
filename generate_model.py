@@ -13,7 +13,6 @@ def parseFile(path):
     for i in range(int(types)):
         parmatersTable.append([int(element)for element in f.readline().rstrip().split(" ")])
     M  = max(tuple(zip(*parmatersTable))[1])
-    print(M)
     conflictsTable = []
     for i in range(int(conflicts)):
         conflictsTable.append([int(element)for element in f.readline().rstrip().split(" ")])
@@ -66,13 +65,13 @@ def parseFile(path):
 
     if (int(args[2]) == 2):
         #special constraint n 2
-        for conflict in conflictsTable:
-            ctr_6 = ""
-            for c in range(int(obj)):
+        for c in range(int(obj)):
+            for conflict in conflictsTable:
+                ctr_6 = ""
                 for type in conflict:
                     ctr_6 += "y_{0}_{1} + " .format(str(type), c)
-            ctr_6 = ctr_6[:len(ctr_6)-3] + " <= 1"
-            constraintList.append(ctr_6)
+                ctr_6 = ctr_6[:len(ctr_6)-3] + " <= 1"
+                constraintList.append(ctr_6)
 
     
                   
