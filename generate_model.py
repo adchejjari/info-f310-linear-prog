@@ -1,3 +1,9 @@
+"""
+    Projet algo3 et recherche operationnelle
+    Auteurs : Adnane CHEJJARI, Mario MASSIMETTI
+
+"""
+
 import sys
 
 class ModelGenerator:
@@ -84,7 +90,7 @@ class ModelGenerator:
                 for conflict in self.conflictsTable:
                     ctr_6 = ""
                     for t in conflict:
-                        ctr_6 += "y_{0}_{1} + " .format(str(t), c)
+                        ctr_6 += "y_{1}_{0} + " .format(str(t), c)
                     ctr_6 = ctr_6[:len(ctr_6)-3] + " <= 1"
                     constraintList.append(ctr_6)
 
