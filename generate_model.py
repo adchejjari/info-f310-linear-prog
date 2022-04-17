@@ -13,7 +13,8 @@ class ModelGenerator:
         f = open(self.filePath, "r")
         parameters = f.readline().rstrip().split(" ")
         # n = nombre d'objets, T = nombre de types, I = nombre d'incompatibilites
-        self.n, self.T, I = int(parameters[0]), int(parameters[1]), int(parameters[2])
+        self.id = self.filePath[:len(self.filePath)-4].split("_")[-1]
+        self.n, self.T, self.I = int(parameters[0]), int(parameters[1]), int(parameters[2])
         self.q = f.readline().rstrip()  #capacité de la boite
         self.parmatersTable = []
         for t in range(self.T):
@@ -21,12 +22,12 @@ class ModelGenerator:
             self.parmatersTable.append([int(element)for element in f.readline().rstrip().split(" ")])
         self.M  = max(tuple(zip(*self.parmatersTable))[1])  #big M 
         self.conflictsTable = []
-        for i in range(I):
+        for i in range(self.I):
             self.conflictsTable.append([int(element)for element in f.readline().rstrip().split(" ")])
         
     def generateModel(self):
         
-        model = open(self.filePath + ".lp", "w")
+        model = open("model_{0}_{1}_{2}_{3}_{4}.lp".format(self.n, self.T, self.I, self.id, self.p), "w")
     
         #fonction objet
         model.write("Minimize \n")
@@ -41,6 +42,7 @@ class ModelGenerator:
         constraintList = []
         
         for c in range(self.n):
+            # poids total des objets dans une boite <= q
             ctr_1 = ""
             for t in range(self.T):
                 ctr_1 += "{2}x_{0}_{1} + ".format(str(c), str(t), self.parmatersTable[t][0])
@@ -48,6 +50,7 @@ class ModelGenerator:
             constraintList.append(ctr_1)
 
         for t in range(self.T):
+            # nombre total d'objets de type t stocké = n_t
             ctr_2 = ""
             for c in range(self.n):
                 ctr_2 += "x_{0}_{1} + ".format(str(c), str(t))
@@ -55,11 +58,13 @@ class ModelGenerator:
             constraintList.append(ctr_2)
             
         for t in range(self.T):
+            # si X_c_t = 0 alors Y_c_t = 0
             for c in range(self.n):
                 ctr_3 = "y_{0}_{1} - x_{0}_{1} <= 0".format(str(c), str(t))
                 constraintList.append(ctr_3)
             
         for t in range(self.T):
+            # si X_c_t > 0 alors Y_c_t = 1
             for c in range(self.n):
                 ctr_4 = "x_{0}_{1} - {2}y_{0}_{1} <= 0".format(str(c), str(t), str(self.M))
                 constraintList.append(ctr_4)
@@ -74,7 +79,7 @@ class ModelGenerator:
                 constraintList.append(ctr_5)
 
         if (self.p == 2):
-            #special constraint n 2
+            #deuxieme contrainte additionelle
             for c in range(self.n):
                 for conflict in self.conflictsTable:
                     ctr_6 = ""
